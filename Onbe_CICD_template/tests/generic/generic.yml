@@ -1,0 +1,6 @@
+---
+version: 2
+dataTests:
+- name: "null_test"
+  arguments: []
+  type: "generic"
