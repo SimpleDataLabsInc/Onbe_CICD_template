@@ -13,7 +13,7 @@ After the merge:
 - Tag the merge commit with the new semantic version intorduced to the default branch from the feature branch
 
 These actions correspond to the following [workflow definition files](https://docs.github.com/en/actions/writing-workflows/about-workflows) in the special `.github/workflows` folder at the root of the repository:
-- `chech-prophecy-minor-version.yml`
+- `check-prophecy-minor-version.yml`
 - `run-dbt-tests.yml`
 - `tag-release.yml`
 
@@ -45,14 +45,47 @@ The following file tree diagram[^1] enumerates the special files that ship with 
 └── [ other generated files ]
 ```
 
-### `.github/workflows`
+### `.github/workflows/`
 
 This folder contains the definitions of GitHub Actions that automate the CI/CD operations.  Review the [Introduction](#introduction) above for context regarding the following details.
 
 
-#### `check-prophecy-version.yml`
+#### `check-prophecy-minor-version.yml`
 
 This workflow runs whenever a PR that has the default branch as its base is opened or updated with a new commit.
+
+
+#### `run-dbt-tests.yml`
+
+
+
+#### `tag-release.yml`
+
+
+
+### `.gitignore`
+
+
+
+### `.tool-versions`
+
+
+
+### `Onbe_CICD_template/`
+
+
+
+### `Pipfile` & `Pipfile.lock`
+
+
+
+### `README.md`
+
+This file.
+
+
+### `profiles.yml`
+
 
 
 ## Notes

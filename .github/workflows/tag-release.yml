@@ -1,0 +1,75 @@
+name: Tag the release
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+    paths-ignore:
+      - '.github/**'
+      - './Pipfile*'
+      - './.*'
+      - './README.md'
+      - './ddl/**'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/**'
+
+
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.base_ref }}
+#   cancel-in-progress: true
+
+jobs:
+  tag-release:
+    name: "After merge: pbt tag; git push"
+    if: github.event.pull_request.merged
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.base_ref }}
+          # token: ${{ secrets.GIT_ACCESS_TOKEN }} # pending approval
+          token: ${{ secrets.VERSION_BUMPER_TOKEN }}
+          fetch-tags: true
+      - name: "Setup Python, `pipenv`, `pbt`, etc."
+        uses: actions/setup-python@v5.5.0
+        id: setup
+        with:
+          python-version-file: '.tool-versions'
+          cache: 'pipenv'
+      - name: "Install `pipenv`; `pipenv install`"
+        run: |
+          echo -n "Setup cache hit? : "
+          echo ${{ steps.setup.outputs.cache-hit }}
+          pip install 'pipenv==v2024.4.1' --user
+          pipenv install
+      - name: "If `pbt --check-sync` then `pbt tag`"
+        run: |
+          if pipenv run \
+            pbt versioning \
+              --path "$GITHUB_WORKSPACE" \
+              --check-sync
+          then
+              git config \
+                --global user.name "github-actions[bot]"
+              git config \
+                --global user.email \
+                  "github-actions[bot]@users.noreply.github.com"
+              pipenv run \
+                pbt tag \
+                  --path "$GITHUB_WORKSPACE" \
+                  --branch "$(basename "$GITHUB_WORKSPACE")"
+                  # --branch is just a label; not a target for git
+                  # --no-push
+              # git push origin "$(git tag --contains "$GITHUB_HEAD_REF")" --verbose
+              echo "Pushed new tag `$(git tag --contains)` onto branch `$GITHUB_REF_NAME`"
+          else
+              echo "`pbt versioning --sync-check` failed; please check Prophecy metadata"
+              # Fail the job to indicate changes were needed
+              exit 1
+          fi
