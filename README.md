@@ -49,6 +49,11 @@ The following file tree diagram[^1] enumerates the special files that ship with 
 
 This folder contains the definitions of GitHub Actions that automate the CI/CD operations.  Review the [Introduction](#introduction) above for context regarding the following details.
 
+These workflows each perform the following common setup actions before proceeding to their distinctive operations in an isolated execution environment provided by GitHub Actions:
+
+- Clone the Project repository locally
+- Checkout the feature branch
+- Install Python, `pipenv`[^3], `pbt`[^4], `dbt`[^5] and their dependencies, including the Snowflake adapter for `dbt`.
 
 #### `check-prophecy-minor-version.yml`
 
@@ -93,3 +98,9 @@ This file.
 [^1]: File tree diagram generated using [tree.nathanfriend.com](https://tree.nathanfriend.com/) like [this](https://tree.nathanfriend.com/?s=(%27options!(%27fancy7~fullPath!false~trailingSlash7~rootDot7)~9(%279%27.github%2FworkflowsKcheck-prophecy-minor-45*run-dbt-tests5*tag-release52.gitignore2.tool-4s2Onbe_CICD_templateKF3test30oldH8%26%206J%20GG.lock2README.md2pro6s520ileJ%27)~4!%271%27)*2B0%5B%20othH%20genHated%20f2%5Cn3s*Bnull_F.sql*4vHsion5.yml6file7!true8s%209source!B%20%20FmodelG2Pip6HerJ8%5DK%2F*%01KJHGFB987654320*).
 
 [^2]: As defined by "[semantic versioning](https://semver.org/)", mnemonicially respresented as `MAJOR.MINOR.PATCH`. 
+
+[^3]: [Pipenv](https://pipenv.pypa.io/en/latest/)("Python Dev Workflow for Humans"); "a Python virtualenv management tool that nicely bridges the gaps between `pip`, `python` and `virtualenv`."
+
+[^4]: Prophecy Build Tool (PBT) ([doc](https://docs.prophecy.io/engineers/prophecy-build-tool/)|[src](https://github.com/SimpleDataLabsInc/prophecy-build-tool)) allows integration of Prophecy SQL Projects with CI/CD tools (e.g. Github Actions), and build systems (e.g. Jenkins).  PBT's capabilities for SQL Projects are limited relative to Spark Projects as of release 1.2.49.
+
+[^5]: dbt Core ([doc](https://docs.getdbt.com/docs/core/about-core-setup)|[src](https://github.com/dbt-labs/dbt-core) "is an open-source tool that enables data teams to transform data using analytics engineering best practices."  Used by the Prophecy platform to execute SQL Projects.
