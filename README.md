@@ -3,7 +3,7 @@
 
 ## Introduction
 
-This repository provides the necessary components to add to a [Prophecy](https://www.prophecy.io/) SQL Project's GitHub repository to satisfy Onbe's requirements for CI/CD automation.  The necessity of this customization arises from Onbe's requirement that default branches (usually named `main`) in Onbe's GitHub repositories are protected by GitHub rulesets that prevent developers from pushing Git commits directly to the default branch.  Instead, production-ready code that is to be deployed to the production environment must be reviewed and approved through GitHub's Pull Request(PR) mechanism to merge it into the default branch.  This repository defines a set of GitHub Actions workflows to perform the following operations during the lifecycle of a Pull Request that has the default branch as its target (or "base"):
+This repository provides the necessary components to add to a [Prophecy](https://www.prophecy.io/) SQL Project's GitHub repository to satisfy Onbe's requirements for CI/CD automation.  The necessity of this customization arises from Onbe's requirement that default branches (usually named `main`) in Onbe's GitHub repositories are protected by GitHub rulesets that prevent developers from pushing Git commits directly to the default branch.  Instead, production-ready code that is to be deployed to the production environment must be reviewed and approved through GitHub's Pull Request(PR) mechanism to merge it into the default branch.  This repository defines a set of GitHub Actions (GHA) workflows to perform the following operations during the lifecycle of a Pull Request that has the default branch as its target (or "base"):
 
 Prior to the merge:
 - Check that the Project minor version number[^2] in the Prophecy metadata on the feature (or "head") branch of the PR is greater than the default branch; if not; increment the minor version.
@@ -24,7 +24,7 @@ See the next section for details on the behavior of these workflows and other sp
 
 The following file tree diagram[^1] enumerates the special files that ship with this template.  The purpose of each of these files will be described in the reamainder of this document.  Other folders and files that may be present in this repository (usually on some bramch other than `main`) or a clone/fork of same are either generated and maintained automatically by the Prophecy platform or are in need of additional documentation here.
 
-```
+```plaintext
 .
 ├── .github/workflows/
 │   ├── check-prophecy-minor-version.yml
@@ -63,7 +63,7 @@ This workflow runs whenever a PR that has the default branch as its base is open
 
 #### `run-dbt-tests.yml`
 
-Like `check-prophecy-minor-version.yml`, this workflow also runs whenever a PR that has the default branch as its base is opened or updated with a new commit.  These two workflows are allowed to run concurrently because they have no interaction or interdependency.  This workflows performs the same setup, checks the connection to the Snowflake target specified by the local `profiles.yml` file (see [below](#profiles=yml)) and runs the tests defined in the Project using DBT.  If any test fails then the workflow will fail and the PR will not allow the merge to proceed.  The devloper must now determine what logic in the Model(s), or in the test(s) themselves, to adjust before repeating the tests by pusing a new commit to the feature branch.
+Like `check-prophecy-minor-version.yml`, this workflow also runs whenever a PR that has the default branch as its base is opened or updated with a new commit.  These two workflows are allowed to run concurrently because they have no interaction or interdependency.  This workflows performs the same setup, checks the connection to the Snowflake target specified by the local `profiles.yml` file (see [below](#profiles-yml)) and runs the tests defined in the Project using DBT.  If any test fails then the workflow will fail and the PR will not allow the merge to proceed.  The devloper must now determine what logic in the Model(s), or in the test(s) themselves, to adjust before repeating the tests by pusing a new commit to the feature branch.
 
 
 #### `tag-release.yml`
@@ -96,15 +96,43 @@ This folder contains a minimal Prophecy SQL project here comprised of a single t
 
 ### `Pipfile` & `Pipfile.lock`
 
+From the [Pipenv documentation](https://pipenv.pypa.io/en/latest/pipfile.html#pipfile-pipfile-lock):
+> `Pipfile` contains the specification for the project top-level requirements and any desired specifiers. This file is managed by the developers invoking `pipenv` commands.
+> 
+> . . .
+>
+> `Pipfile.lock` replaces the `requirements.txt` file used in most Python projects and adds security benefits of tracking the packages hashes that were last locked. This file is managed automatically through locking actions.
+>
+> You should add both `Pipfile` and `Pipfile.lock` to the project’s source control.
+
+These files are consulted by the GHA workflows during their setup steps.  They tell the `pipenv` tool exactly what software components to install in the virtual environments where the core steps of the workflows run.
 
 
 ### `README.md`
 
-This file.
+This document.
 
 
 ### `profiles.yml`
 
+This file contains data platform connection settings used by the DBT Core CLI (`dbt`) to access remote SQL services (e.g. Snowflake, Databricks, PostgreSQL, etc.)  The particular instance of this file at the top level of this repository is only used during the execution of the `run-dbt-tests.yml` workflow described [above](#run-dbt-tests-yml).
+
+
+## Use these GitHub Actions in your Prophecy Project
+
+### Setup
+
+#### Files
+
+#### Secrets
+
+#### Tokens
+
+#### Repository Settings
+
+### Usage
+
+### Troubleshooting
 
 
 ## Notes
