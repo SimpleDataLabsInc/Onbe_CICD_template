@@ -1,4 +1,4 @@
-# Onbe_CICD_template
+# CI/CD for Prophecy SQL Projects at Onbe
 
 
 ## Introduction
@@ -46,6 +46,17 @@ execution.
 > [!CAUTION]
 > Are you sure you know what you are doing?  There is some important information
 > among those gory details . . . you have been warned!
+
+
+### Conventions
+
+Throughout this document, first-class entities in Prophecy SQL/DBT Projects such
+as Models and Tests (and "Projects" themselves!) will be capitalized to
+emphasize their particular meaning in this context.
+
+File names and paths, YAML elements, and executable utilities/commands will be
+shown in `monospace`.
+
 
 
 ## Repository Contents
@@ -101,6 +112,7 @@ provided by GitHub Actions:
 
 Each individual workflow performs specific operations as follows:
 
+
 #### `check-prophecy-minor-version.yml`
 
 This workflow runs whenever a PR that has the default branch as its base is
@@ -116,6 +128,9 @@ will succeed because of the new metadata in the feature branch. Any other
 failure mode will block the PR from merging and will require manual intervention
 because it is not anticipated by the existing workflow logic.
 
+See its contents here:
+[`.github/workfows/check-prophecy-minor-version.yml`](.github/workflows/check-prophecy-minor-version.yml)
+
 
 #### `run-dbt-tests.yml`
 
@@ -130,6 +145,9 @@ allow the merge to proceed. The devloper must now determine what logic in the
 Model(s), or in the test(s) themselves, to adjust before repeating the tests by
 pusing a new commit to the feature branch.
 
+See its contents here:
+[`.github/workflows/run-dbt-tests.yml`](.github/workflows/run-dbt-tests.yml)
+
 
 #### `tag-release.yml`
 
@@ -141,6 +159,9 @@ A failure of this workflow likely indicates that the particular release tag for
 the current Project version already exists in the repository. This type of
 failure should not normally occur, so some inspection and manual intervention
 would be necessary in this scenario.
+
+See its contents here:
+[`.github/workfows/tag-release.yml`](.github/workflows/tag-release.yml)
 
 
 ### `.git/`
@@ -255,6 +276,12 @@ etc.) The particular instance of this file at the top level of this repository
 is only used during the execution of the `run-dbt-tests.yml` workflow described
 [above](#run-dbt-tests-yml).
 
+Be sure to adjust any other parameters present in `profiles.yml`, such as
+`account`, `role`, `database`, and `schema` as necessary for the Project's tests
+to run correctly.  `database` and `schema` are especially important as those
+will be the defaults for any bare, unqualified table names in the Project's
+Models and Tests (e.g. `MY_TABLE` vs. `MY_DATABASE.MY_SCHEMA.MY_TABLE`).
+
 
 ## Add these GitHub Actions to a Prophecy Project
 
@@ -307,18 +334,76 @@ folder (`./`):
 - `./profiles.yml`
 
 
+#### Permissions
+
+GitHub will not execute these workflows unless adequate [Actions permissions](https://github.com/SimpleDataLabsInc/Onbe_CICD_template/settings/actions)[^4]
+are granted in the repository's settings under **Actions/General** as shown
+here:
+
+![Screenshot of Actions permissions in a GitHub repository's settings](/doc/images/actions-permissions.png)
+
+Choose the level of permissions to grant to GHA that is appropriate to your
+repository, according to your organization's policies.
+
 
 #### Secrets
 
-Passwords, authentication tokens, and other sensitive information that might be
-used for unauthorized access to your organization's IT infrastructure should
-never be stored in plain text in a GitHub-hosted repository.
+As [described above](#run-dbt-tests-yml), the GHA workflow defined in
+`run-dbt-tests.yml` runs any tests defined in the Project. To do this it must be
+able to connect the remote data platform from the GHA execution environment.
+Because this occurs outside of Prophecy and Airflow using the `dbt` CLI directly
+there must be a `profiles.yml` file in the Project's source code repository (see
+[above](#profiles-yml)).
 
-#### Tokens
+To avoid storing the user names and passwords in plain text the repository-local
+`profiles.yml` file used by GHA has Jinja template placeholders for those
+parameters that get filled in by `dbt` at runtime.
+To meet this need,
+GitHub provides a secure mechanism to .
 
-#### Repository Settings
+Like any GHA workflow, `run-dbt-tests.yml` has secure access to the [GitHub
+secrets](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions)
+defined in the repository's
+[settings](https://github.com/SimpleDataLabsInc/Onbe_CICD_template/settings/secrets/actions)
+in the GitHub web UI[^4]. The definition in `run-dbt-tests.yml` securely
+populates environment variables with the necessary secret values to make them
+available to the `dbt` executable at runtime in a standard way. These secrets
+and their associated environment variables are named `DBT_USER` and
+`DBT_PASSWORD` according to DBT
+[conventions](https://docs.getdbt.com/reference/global-configs/about-global-configs#available-flags).
 
-### Usage
+Under **Actions/Secrets and variables** in your Project's GitHub repository's
+settings look for a green button labeled "New repository secret" to populate the
+necessary values as shown here:
+
+![Screenshot of Actions secrets in a GitHub repository's settings](/doc/images/actions-secrets.png)
+
+
+### Procedure
+
+Condensing and presenting the information above as runbook-style steps:
+
+1. Copy the [GHA workflow files](#github-workflows) from the
+   `./.github/workflows/` folder of this repository to a Prophecy SQL/DBT
+   Project GitHub repository.
+   
+2. Copy the these other files to their corresponding positions in your Project
+   repository (see file tree diagram [here](#repository-contents)):
+   
+   - [`.gitignore`](#gitignore)
+   - [`.tool-versions`](#tool-versions)
+   - [`Pipfile`](#pipfile-pipfile-lock)
+   - [`Pipfile.lock`](#pipfile-pipfile-lock)
+   - [`README.md`](#readme-md)(optional; consider renaming it)
+   - [`profiles.yml`](#profiles-yml)
+   
+3. Grant [permissions](#permissions) for GHA workflows to run in your Project's repository's
+   settings.
+   
+4. Create and populate [secrets](#secrets) named `DBT_USER` and `DBT_PASSWORD`
+   with appropriate values that will allow `dbt` to connect to your data
+   platform (i.e. Snowflake) and run any Tests defined in your Project.
+
 
 ### Troubleshooting
 
@@ -335,3 +420,12 @@ never be stored in plain text in a GitHub-hosted repository.
 [^3]: File tree diagram generated using
     [tree.nathanfriend.com](https://tree.nathanfriend.com/) like
     [this](https://tree.nathanfriend.com/?s=(%27options!(%27fancy7~fullPath!false~trailingSlash7~rootDot7)~9(%279%27.github%2FworkflowsKcheck-prophecy-minor-45*run-dbt-tests5*tag-release52.gitignore2.tool-4s2Onbe_CICD_templateKF3test30oldH8%26%206J%20GG.lock2README.md2pro6s520ileJ%27)~4!%271%27)*2B0%5B%20othH%20genHated%20f2%5Cn3s*Bnull_F.sql*4vHsion5.yml6file7!true8s%209source!B%20%20FmodelG2Pip6HerJ8%5DK%2F*%01KJHGFB987654320*).
+
+[^4]: Links to repository settings in the GitHub web UI given in this document
+    are relative to the
+    [SimpleDataLabsInc/Onbe_CICD_template](https://github.com/SimpleDataLabsInc/Onbe_CICD_template)
+    repository where this document was originally composed. The corresponding
+    settings for other GitHub repositories will require substition of the
+    `<owner>` and `<repo>` slots in
+    `https://github.com/<owner>/<repo>/settings/actions` (for example) in the
+    URL after your browser has attempted to access the original repository.
