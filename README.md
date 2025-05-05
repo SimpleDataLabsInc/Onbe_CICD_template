@@ -5,19 +5,22 @@
 
 This repository provides the necessary components to add to a
 [Prophecy](https://www.prophecy.io/) SQL Project's GitHub repository to satisfy
-Onbe's requirements for CI/CD automation. The necessity of this customization
-arises from Onbe's requirement that default branches (usually named `main`) in Onbe's GitHub repositories are protected by GitHub
-rulesets that prevent developers from pushing Git commits from a feature branch
-(or "head" branch) directly to the default branch (or "base" branch)[^1]. Instead, production-ready code that
-is to be deployed to the production environment must be reviewed and approved
-through GitHub's Pull Request (PR) mechanism to merge it into the default
-branch. This repository defines a set of GitHub Actions (GHA) workflows to
-perform the following operations during the lifecycle of a Pull Request that has
-the default branch as its target:
+Onbe's requirements for continuous integration/continuous delivery (CI/CD)
+automation. The necessity of this customization arises from Onbe's requirement
+that default branches (usually named `main`) in Onbe's GitHub repositories are
+protected by GitHub rulesets that prevent developers from pushing Git commits
+from a feature branch (or "head" branch) directly to the default branch (or
+"base" branch)[^1]. Instead, production-ready code that is to be deployed to the
+production environment must be reviewed and approved through GitHub's Pull
+Request (PR) mechanism to merge it into the default branch. This repository
+defines a set of GitHub Actions (GHA) workflows to perform the following
+operations during the lifecycle of a Pull Request that has the default branch as
+its target:
 
 Prior to the merge:
 
-- Check that the Project minor version number[^2] in the Prophecy metadata on
+- Check that the Project minor version number[^2](see also "[Versioning and
+  tagging](#versioning-and-tagging)" below) in the Prophecy metadata on
   the feature/"head" branch of the PR is greater than the default/"base" branch;
   if not; increment the minor version.
 - Run the DBT tests defined in the Project using the [DBT Core
@@ -48,15 +51,53 @@ execution.
 > among those gory details . . . you have been warned!
 
 
-### Conventions
+## Conventions
+
+### Notation
 
 Throughout this document, first-class entities in Prophecy SQL/DBT Projects such
 as Models and Tests (and "Projects" themselves!) will be capitalized to
 emphasize their particular meaning in this context.
 
-File names and paths, YAML elements, and executable utilities/commands will be
-shown in `monospace`.
+File names and paths, YAML elements (keys and values), and executable
+utilities/commands will be shown in `monospace`.
 
+
+### Branching model
+
+The current implementation of this CI/CD automation is not sensitive to the
+developers' choice of branching model, whether it be GitHub Flow, Git Flow, or
+any other branching convention.  This is because the workflows are configures to
+execute only on activity in the `main` branch, which is assumed to be the
+Project repository's default branch and also a protected branch, as determined
+by the repository's rulesets.
+
+To apply a branching model similar to Git Flow where feature branches are merged
+into a common `dev` branch and only `dev` get merged into `main`, no changes to
+the current CI/CD-GHA configuration are necessary.  Although there are currently
+no hard constraints in place to enforce such a branching model, it will be up to
+the team to define and socialize their conventions in order to apply them
+consistently.  A PR approver would manually close a malformed PR that specifies
+merging a feature branch directly into `main`, for example, adding a comment
+explaining how to open a new, correct PR with `dev` as its base branch.
+
+
+### Versioning and tagging
+
+As with the branching model, the current CI/CD implementation is only
+responsible for applying tags to the protected `main`/default branch because it
+only responds to merges into `main`.  Because `main` is protected by GitHub
+rulesets, merges into it can only occur through pull requests (PRs).  As
+mentioned in the [introduction](#introduction) above, the tagging logic in the
+GHA workflows only manipulates the `MINOR` component of the `MAJOR.MINOR.PATCH`
+convention known as "semantic versioning".  Therefore it is natural to utilize
+the `PATCH` component for "development releases" of commits on the common `dev`
+branch.  For example, after production release `0.1.0`, a new `dev` branch would
+be created at that point.  As new feature branches get merged
+into `dev`, it is natural and recommended to tag these "developement releases"
+like `0.1.1`, `0.1.2`, etc.  These tags with incrementing `PATCH` versions will
+be specified manually in the Prophecy UI because no CI/CD is neccessary, nor
+defined, for the unprotected `dev` branch.
 
 
 ## Repository Contents
@@ -387,7 +428,7 @@ Condensing and presenting the information above as runbook-style steps:
    `./.github/workflows/` folder of this repository to a Prophecy SQL/DBT
    Project GitHub repository.
    
-2. Copy the these other files to their corresponding positions in your Project
+1. Copy the these other files to their corresponding positions in your Project
    repository (see file tree diagram [here](#repository-contents)):
    
    - [`.gitignore`](#gitignore)
@@ -397,15 +438,53 @@ Condensing and presenting the information above as runbook-style steps:
    - [`README.md`](#readme-md)(optional; consider renaming it)
    - [`profiles.yml`](#profiles-yml)
    
-3. Grant [permissions](#permissions) for GHA workflows to run in your Project's repository's
-   settings.
+1. Grant [permissions](#permissions) for GHA workflows to run in your Project's
+   repository's settings.
    
-4. Create and populate [secrets](#secrets) named `DBT_USER` and `DBT_PASSWORD`
+1. Create and populate [secrets](#secrets) named `DBT_USER` and `DBT_PASSWORD`
    with appropriate values that will allow `dbt` to connect to your data
-   platform (i.e. Snowflake) and run any Tests defined in your Project.
+   platform (i.e. Snowflake) and run any Tests defined in your Project by
+   filling in the corresponding values in the `profiles.yml` file in this
+   repository.
 
+1. Create a feature branch from the latest commit (the "tip" or `HEAD` commit)
+   of `main` (or `dev`, according to the Project's [branching
+   model](#branching-model)), and make some changes to the Project source code
+   and/or metadata in the Prophecy UI.
+   
+1. Create a PR that indicates that the feature branch is ready to be merged into
+   `main` and coordinate the appropriate review actions with the Project's
+   designated reviewer(s).
+   
+1. As soon as the PR is opened two of the GHA workflows
+   (`check-prophecy-minor-version.yml` and `run-dbt-tests.yml`) will run
+   immediately as "checks" whose results will be visible in the PR upon
+   completion.
+   
+1. Whenever the feature branch has a semantic version less than or equal to the
+   version in the Prophecy metadata in `main`, GHA will use PBT to autmatically
+   increment the `MINOR` version in the Prophecy metadata and push a new commit
+   with that change to the feature branch.
+   
+1. Make additional commits to address any failures. Normally this should only
+   involve the tests; the GHA automatically incrementing the `MINOR` version
+   with a new commit is not considered a failure. GHA will repeat the checks
+   after each commit to the PR's head branch, i.e. the feature branch.
+   
+1. As soon as both checks pass the PR is ready to proceed with approval from a
+   designated reviewer.  Otherwise the reviewer would make comments on the PR or
+   otherwise communicate the feature's branches deficiencies to the developer,
+   thereby prompting additional commits on the feature branch.  The PR remains
+   open during this iterative process.
+   
+1. Open completion of the PR, GHA detect the PR's merge commit on the `main`
+   branch and the `tag-release.yml` workflow applies the appropriate tag with
+   the newly incremented `MINOR` version.
+   
 
 ### Troubleshooting
+
+TODO
 
 
 ## Notes
