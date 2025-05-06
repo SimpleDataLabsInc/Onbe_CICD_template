@@ -100,6 +100,19 @@ be specified manually in the Prophecy UI because no CI/CD is neccessary, nor
 defined, for the unprotected `dev` branch.
 
 
+### Example workflow
+
+``` mermaid
+gitGraph TB:
+    commit tag: "my_project/0.1.0"
+    branch feature-1
+    commit id: "working in Prophecy..."
+    commit id: "working in Prophecy..."
+    commit id: "open a PR; GHA auto-bumps minor version" type: HIGHLIGHT
+    checkout main
+    merge feature-1 id: "approve the PR to merge; GHA tags the release" tag: "my_project/0.2.0"
+```
+
 ## Repository Contents
 
 The following file tree diagram[^3] enumerates the special files that ship with
@@ -249,7 +262,7 @@ directly relevant to the GHA workflows.
 
 > [!NOTE]
 > This style of tool version specification comes from the well-known
-> [`asdf`](https://asdf-vm.com/) version menagement project and was adopted by
+> [`asdf`](https://asdf-vm.com/) version management project and was adopted by
 > the `setup-python` action template as of its [v5.5.0
 > release](https://github.com/actions/setup-python/releases/tag/v5.5.0) (see its
 > PR [#1043](https://github.com/actions/setup-python/pull/1043) for details).
