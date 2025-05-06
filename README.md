@@ -103,14 +103,32 @@ defined, for the unprotected `dev` branch.
 ### Example workflow
 
 ``` mermaid
+---
+config:
+  gitGraph:
+    parallelCommits: true
+    showCommitLabel: false
+---
 gitGraph TB:
+    switch main
     commit tag: "my_project/0.1.0"
-    branch feature-1
-    commit id: "working in Prophecy..."
-    commit id: "working in Prophecy..."
-    commit id: "open a PR; GHA auto-bumps minor version" type: HIGHLIGHT
+    commit tag: "my_project/0.2.0"
+    branch "feature-1"
+    branch "feature-2"
+    checkout "feature-1"
+    commit
+    commit
+    commit type: HIGHLIGHT
+    switch main
+    merge feature-1 tag: "my_project/0.3.0"
+    checkout "feature-2"
+    commit
+    commit
+    commit
+    commit type: HIGHLIGHT
+    switch main
+    merge feature-2 tag: "my_project/0.4.0"
     checkout main
-    merge feature-1 id: "approve the PR to merge; GHA tags the release" tag: "my_project/0.2.0"
 ```
 
 ## Repository Contents
