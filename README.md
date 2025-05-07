@@ -12,10 +12,12 @@ protected by GitHub rulesets that prevent developers from pushing Git commits
 from a feature branch (or "head" branch) directly to the default branch (or
 "base" branch)[^1]. Instead, production-ready code that is to be deployed to the
 production environment must be reviewed and approved through GitHub's Pull
-Request (PR) mechanism to merge it into the default branch. This repository
-defines a set of GitHub Actions (GHA) workflows to perform the following
-operations during the lifecycle of a Pull Request that has the default branch as
-its target:
+Request (PR) mechanism to merge it into the default branch.
+
+**This repository defines a set of GitHub Actions (GHA) workflows to perform the
+following operations during the lifecycle of a Pull Request that has the default
+branch as its target:**
+
 
 Prior to the merge:
 
@@ -23,20 +25,34 @@ Prior to the merge:
   tagging](#versioning-and-tagging)" below) in the Prophecy metadata on
   the feature/"head" branch of the PR is greater than the default/"base" branch;
   if not; increment the minor version.
+  
 - Run the DBT tests defined in the Project using the [DBT Core
-  CLI](https://docs.getdbt.com/reference/commands/test)(`dbt test`)
+  CLI](https://docs.getdbt.com/reference/commands/test)(`dbt test`).
+
 
 After the merge:
 
 - Tag the merge commit with the new semantic version intorduced to the default
-  branch from the feature branch
+  branch from the feature branch.
+
 
 These actions correspond to the following [workflow definition
 files](https://docs.github.com/en/actions/writing-workflows/about-workflows) in
-the special `.github/workflows` folder at the root of the repository:
+the special [`.github/workflows`](.github/workflows) folder at the root of this
+repository:
+
+
+Prior to the merge:
+
 - `check-prophecy-minor-version.yml`
+  
 - `run-dbt-tests.yml`
+
+
+After the merge:
+
 - `tag-release.yml`
+
 
 See the next section for details on the behavior of these workflows and other
 special files present in the repository necessary for their successful
@@ -133,109 +149,6 @@ gitGraph TB:
     checkout main
 ```
 
-#### Git Flow (simplified)
-
-``` mermaid
----
-config:
-  gitGraph:
-    parallelCommits: false
-    showCommitLabel: false
----
-gitGraph TB:
-    commit tag: "my_project/0.4.0"
-    branch dev order:1
-    branch feature-3 order:2
-    commit
-    commit
-    commit
-    branch feature-5 order:4
-    commit
-    commit
-    switch dev
-    merge feature-3 tag: "my_project/0.4.1-dev"
-    switch main
-    branch feature-4 order:3
-    commit
-    switch dev
-    merge feature-5 tag: "my_project/0.4.2-dev"
-    commit type: HIGHLIGHT id: "PR #5"
-    switch feature-4
-    commit
-    commit
-    switch main
-    merge dev tag: "my_project/0.5.0"
-    %% branch "dev'" order:1
-    %% switch "dev'"
-    switch dev
-    merge main
-    %% switch dev
-    %% merge "dev'"
-    branch feature-6 order:5
-    commit
-    commit
-    commit id: "PR #7"
-    switch dev
-    merge feature-4 tag: "my_project/0.5.1-dev"
-    merge feature-6 tag: "my_project/0.5.2-dev"
-    commit type: HIGHLIGHT id: "PR #6"
-    switch main
-    merge dev tag: "my_project/0.6.0"
-```
-
-#### Git Flow (simplified, protect `dev`)
-
-``` mermaid
----
-config:
-  gitGraph:
-    parallelCommits: false
-    showCommitLabel: false
----
-gitGraph TB:
-    commit tag: "my_project/0.9.0"
-    branch dev order:1
-    branch feature-8 order:3
-    commit
-    commit
-    commit
-    branch feature-7 order:2
-    commit
-    commit
-    switch feature-7
-    commit type: HIGHLIGHT id: "PR #11"
-    switch dev
-    merge feature-7 tag: "my_project/0.9.1-dev"
-    branch feature-10 order:5
-    switch main
-    branch feature-9 order:3
-    commit
-    switch feature-9
-    commit type:HIGHLIGHT id: "PR #12"
-    switch dev
-    merge feature-9 tag: "my_project/0.9.2-dev"
-    commit type: HIGHLIGHT id: "PR #13"
-    switch feature-8
-    commit
-    commit
-    switch main
-    merge dev tag: "my_project/0.10.0"
-    switch dev
-    merge main
-    switch feature-10
-    commit
-    commit
-    switch feature-8
-    commit type: HIGHLIGHT id: "PR #14"
-    switch feature-10
-    commit type: HIGHLIGHT id: "PR #15"
-    switch dev
-    merge feature-8 tag: "my_project/0.10.1-dev"
-    merge feature-10 tag: "my_project/0.10.2-dev"
-    commit type: HIGHLIGHT id: "PR #16"
-    switch main
-    merge dev tag: "my_project/0.11.0"
-```
 
 ## Repository Contents
 
