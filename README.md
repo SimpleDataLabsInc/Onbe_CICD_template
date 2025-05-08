@@ -273,6 +273,18 @@ via an orchestration Fabric, as we will see in the next section.
 
 #### Deployment process
 
+To begin the deployment proces . . .
+
+![release button](doc/images/release-button.png)
+
+![selective job deployment](doc/images/selective-job-deployment.png)
+
+![deploy option](doc/images/deploy-option.png)
+
+![choose a release](doc/images/choose-a-release.png)
+
+![override fabric](doc/images/override-fabric.png)
+
 
 
 ## Repository Contents
