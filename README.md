@@ -102,7 +102,7 @@ explaining how to open a new, correct PR with `dev` as its base branch.
 
 As with the branching model, the current CI/CD implementation is only
 responsible for applying tags to the protected `main`/default branch because it
-only responds to merges into `main`.  Because `main` is protected by GitHub
+only to merges into `main`.  Because `main` is protected by GitHub
 rulesets, merges into it can only occur through pull requests (PRs).  As
 mentioned in the [introduction](#introduction) above, the tagging logic in the
 GHA workflows only manipulates the `MINOR` component of the `MAJOR.MINOR.PATCH`
@@ -116,9 +116,64 @@ be specified manually in the Prophecy UI because no CI/CD is neccessary, nor
 defined, for the unprotected `dev` branch.
 
 
-### Example workflows
+### GitHub Flow
 
-#### GitHub Flow
+The CI/CD design in this repository is based on the well-known workflow model
+known as "[GitHub
+Flow](https://docs.github.com/en/get-started/using-github/github-flow)"(also see
+[this article](https://githubflow.github.io/)).  This simple "branching model"
+(or "branching strategy") assumes that code in the default branch (usually
+`main`) is always production-ready and only accepts changes via pull requests
+and merge commits.  All other branches are "feature branches" where new code is
+developed and tested before being merged into `main`.  Before illustrating this
+method of source code management, let's establish some terminology.
+
+
+#### Terminology
+
+- A **commit** is a set of changes to one or more files.
+- A commit usually has a single parent commit.
+- A **branch**** is a named pointer to a commit that advances to a new child commit (the
+  "tip" or "head" of the branch).
+- The **default branch** of a repository is the branch that is first displayed
+  in the GitHub web UI and the only branch that is downloaded when cloning a
+  remote repository.
+- Creating a new branch causes two branches to diverge from a common parent commit
+  after new child commits have been pushed to either of those branches. 
+- A **merge commit** usually has two parents, the previous commits of the two
+  participating branches, the "head branch" and the "base branch".
+- A **pull request** (or "PR") previews the effect of a proposed merge request,
+  which is to modify the files at the tip of the base branch with the changes
+  accumulated in the head branch since the branches diverged.
+- The typical head branch in this model is usually called a **"feature branch"**
+  because it introduces a new feature to the code base.
+- A **tag** is also a named pointer to a commit, very similar to a branch except that it
+  doesn't advance with new commits pushed to the branch.
+
+  
+#### Example workflow
+
+In GitHub Flow, the repository's default branch (usually `main`) is protected by
+its settings in GitHub, thus requiring changes to be reviewed through the pull
+request process.  This review process includes automated actions that are
+triggered by specific events in the repository.  More about these actions in a
+later section.  First let's see how GitHub Flow coordinates the efforts of a
+team working on a common code base.
+
+In this example we see a sequence of development activities on a repository
+named `my_project` with time advancing from top to bottom. Initially the tip of
+the `main` branch is tagged with the most recent release, `my_project/0.1.0`.
+The name of any tag is arbitrary in general, but in this example tags follow the
+Prophecy convention of `<repository name>/<semantic version>`. Two developers
+then indepdentently create new feature branches, `feature-1` and `feature-2`,
+from that commit and begin work on newly assigned tasks.  Because their feature
+branches are not protected in GitHub they are able to push commits to the master
+copy of the repository on GitHub's server (often called the "origin") through
+the Prophecy UI.
+
+![Prophecy screenshot showing "Your changes are now safely committed to
+Git!"](doc/images/safely-committed.png)
+
 
 ``` mermaid
 ---
@@ -148,6 +203,76 @@ gitGraph TB:
     merge feature-2 tag: "my_project/0.4.0"
     checkout main
 ```
+
+
+After a couple of commits on each branch, the developer working on `feature-1`
+decides that their new code is ready to be considered for deployment to the
+production environment. Because `main` is protected, the only way for the
+changes in `feature-1` to be applied to `main` is through a PR.  When a
+developer tries to perform the merge in Prophecy they will get an error.
+
+![Prophecy screenshot showing "Merge failed . . . push declined due to
+repository rule violations"](doc/images/merge-failed.png)
+
+Instead of using the "Merge" button in the lower right corner of Prophecy UI,
+they must click on the three dots to see the option to open a PR.
+
+![Prophecy screenshot showing "Open Pull Request"](doc/images/open-pull-request.png)
+
+This will open a new browser tab in GitHub.com with a form pre-populated with
+the head and base branches, `feature-1` and `main` respectively, for the
+developer to fill out with an optional description before creating the PR.  Upon
+PR creation, GitHub Actions runs the checks that are configured to run at
+this moment.   More on those checks later, but here we see that the checks
+completed successfully (indicated by a green check mark), and that an additional
+commit was pushed to the head branch by the automated actions.
+
+![GitHub screenshot showing a newly created PR with successful
+checks](doc/images/checks-successful.png)
+
+Clicking on the green check mark reveals a list of checks performed and links
+to further details about them.
+
+![GitHub screenshot showing "All checks have passed"](doc/images/checks-successful.png)
+
+At this point, the team may conduct a code review, either virtually within the
+PR itself by making comments or by discussing the proposed changes in a meeting.
+Assuming everything looks fine, a privileged GitHub user then completes the PR
+by clicking on "Merge pull request" and optionally deleting the feature branch
+(which is just a pointer to the newest commit; totally safe).
+
+![GitHub screenshot showing "Pull request successfully merged and
+closed"](doc/images/merged-and-closed.png)
+
+Referring back to the workflow diagram, notice that the last commit on each
+feature branch prior to being merged into `main` has a special square icon.
+This represents the automated commit that was pushed to the feature branch by
+the CI/CD automation shortly after the PR was created.  More about this later,
+but as the commit message in the GitHub screenshots above indicates, the
+Prophecy metadata in the feature branch has been updated with a new semantic
+version by incrementing the minor version.
+
+Ater a PR is completed and its feature branch has been merged into `main`, the
+CI/CD automation tags the merge commit with the new semantic version. These PRs
+may exist and proceed simultaneously, but GitHub ensures that the merge commits
+occur separately. The merge commit of the first PR to be accepted and completed
+(rather than rejected and closed) becomes the tip of the base branch of other
+existing PRs, which causes all of their checks to be repeated. After at least
+one PR has produced new commits and tags on the default branch the team has an
+opportunity to to return to the Prophecy UI and deploy any tagged commit (or
+"release") to an orchestration environment associated with the Prophecy Project
+via an orchestration Fabric, as we will see in the next section.
+
+> [!TIP]
+> At this point, the reader may consider skipping ahead to learn more about
+> the [contents of this repository](#repository-contents) and [how to use its
+> GitHub Actions](#add-these-github-actions-to-a-prophecy-project) in another
+> Prophecy Project before continuing with the release process here.  Choose your
+> own adventure!
+
+
+#### Deployment process
+
 
 
 ## Repository Contents
