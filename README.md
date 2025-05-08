@@ -397,14 +397,16 @@ See its contents here:
 > [!NOTE]
 > Returning to the top-level folder of the repository . . .
 
-This folder acts as a kind of database for Git. It does not exist in GitHub,
-only in cloned working copies. It is only mentioned here in order to deliver the
-folllowing . . .
+This folder acts as a kind of database for the `git` CLI, GitHub Desktop app,
+and related utilities. It does not exist in GitHub, nor is it displayed in the
+GitHub web UI, only in cloned working copies of the repository in a developer's
+local file system. It is only mentioned here in order to deliver the folllowing
+. . .
 
 > [!WARNING]
 > Do not attempt to manipulate this directory or its contents directly.  Any
 > manual operation involving this folder without using the `git` utility is
-> likely to have catastrophic consequences.
+> likely to have catastrophic consequences for the local working copy.
 
 
 ### `.gitignore`
