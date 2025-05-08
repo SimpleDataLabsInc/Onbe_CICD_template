@@ -1,0 +1,342 @@
+{
+  "name" : "Onbe_CICD_template",
+  "fileSystem" : {
+    "type" : "Folder",
+    "name" : "",
+    "children" : { },
+    "path" : "",
+    "editable" : true
+  },
+  "providerType" : "snowflake",
+  "prophecyIDEFolder" : {
+    "name" : "",
+    "children" : { },
+    "path" : "",
+    "editable" : true
+  },
+  "externalSources" : {
+    "type" : "Project",
+    "name" : "",
+    "children" : [ {
+      "type" : "Database",
+      "name" : "ADITYA",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "AI",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "ANYA",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "ASHISH",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "BLACKROCK",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "BOBW",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "BUG_REPRO",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "CHETAN",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "CHIRAG",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "DOCS_ANALYTICS",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "DOCS_RAW",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "EX1_GOR_X",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "EX1_GOR_Y",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "FINANCIAL__ECONOMIC_ESSENTIALS",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "HAYDEN",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "INTERNATIONAL_SOCCER_RESULTS",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "JAFFLE_SHOP",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "JAFFLE_SHOP_VLAUNIR",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "JASVINDER",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "JSR",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "KEERTHI",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "KENPEI",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "KHAGESH",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "KISHORE",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "LALITH",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "LOUIS",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "MACIEJ",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "MATTHEW_DEMO",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "MEITEST",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "MICHELIN_POC",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "MIKE_T",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "MY_TEST_DB",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "NITHESHTESTDB",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "NTONG",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "ONBE_DEMO_DEV",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "ONBE_DEMO_PROD",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "POOJA",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "PPIYUSH_TEST",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "PRAKHAR_DB",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "QA_COPILOT",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "QA_DATABASE",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "QA_TEST",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "QA_UPLOAD_TABLES",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "RAJ",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "RAJAT",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "RAKSHAK",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "RJ",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "RJ_DEV",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "RJ_PROD",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "ROHIT",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "SHASHANK",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "SIEMENS_POC",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "SNOWFLAKE",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "SNOWFLAKE_SAMPLE_DATA",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "SONY",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "SOURCES_DB",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "SREERAM",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "SYNTHETIC_DATA",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "SYNTHETIC_DATA_DIRTY",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "SYNTHETIC_DATA_EDUCATION",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "SYNTHETIC_DATA_FINANCE",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "SYNTHETIC_DATA_HEALTHCARE",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "SYNTHETIC_DATA_MANUFACTURING",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "SYNTHETIC_DATA_MEDIUM_DIRTY",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "SYNTHETIC_DATA_RETAIL",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "SYNTHETIC_DATA_TECHNOLOGY",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "TANMAY",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "TEST",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "TESTING",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "TOYOTA",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "UT_DB_DONOT_USE",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "VLAUNIR_DB",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "WESTPAC",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "jaffle_shop",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "qa_database",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "qa_database_lower_case_only",
+      "children" : [ ]
+    }, {
+      "type" : "Database",
+      "name" : "tESt",
+      "children" : [ ]
+    } ]
+  },
+  "dependenciesContainer" : {
+    "dependencies" : { },
+    "prophecyProjectDependencies" : {
+      "https://github.com/prophecy-io/snowflake-sql-basics" : "45118"
+    }
+  },
+  "entitiesToSync" : [ {
+    "name" : "null_model",
+    "type" : "Model",
+    "syncedOnce" : false
+  } ],
+  "frontEndLanguage" : "sql"
+}

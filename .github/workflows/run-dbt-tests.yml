@@ -1,0 +1,68 @@
+name: Run `dbt` via GitHub Actions
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/**'
+
+jobs:
+  run_dbt_tests:
+    name: "Run DBT tests"
+    runs-on: ubuntu-latest
+    env:
+      DBT_TARGET: "${{ github.base_ref == 'main' && 'PROD' || 'DEV' }}"
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          # token: ${{ secrets.GIT_ACCESS_TOKEN }} # pending approval
+          token: ${{ secrets.VERSION_BUMPER_TOKEN }}
+      - name: "Setup Python"
+        uses: actions/setup-python@v5.5.0
+        id: setup
+        with:
+          python-version-file: '.tool-versions'
+          cache: 'pipenv'
+      - name: "Install `pipenv`, `dotenv`, `dbt`, etc."
+        run: |
+          echo -n "Setup cache hit? : "
+          echo ${{ steps.setup.outputs.cache-hit }}
+          pip install 'pipenv==v2024.4.1' --user
+          pipenv install
+      - name: "Populate `.env` file"
+        run: |
+          for KV in \
+            "DBT_USER ${{ secrets.DBT_USER }}" \
+            "DBT_PASSWORD ${{ secrets.DBT_PASSWORD }}" \
+            "DBT_TARGET ${{ env.DBT_TARGET }}" \
+            "DBT_PROFILE snowflake" \
+            "DBT_PROFILES_DIR ${{ github.workspace }}" \
+            "DBT_LOG_FORMAT_FILE json" \
+            "DBT_LOG_LEVEL_FILE info"
+            do
+              pipenv run dotenv set $KV
+            done
+      - name: "Test the database connection"
+        run: |
+          pipenv run \
+            dbt debug \
+              --vars '{env: ${{ env.DBT_TARGET }}}' \
+              --connection
+      - name: "Run `dbt test`"
+        id: dbt-test
+        run: |
+          pipenv run \
+            dbt test \
+              --vars '{env: ${{ env.DBT_TARGET }}}'
+      # - name: 'Show the result'
+      #   if: ${{ always() }}
+      #   run: echo "${{ steps.dbt-test.outputs.result }}"
+      #   shell: bash

@@ -1,0 +1,84 @@
+{
+  "id" : "null_model",
+  "metainfo" : {
+    "label" : "null_model",
+    "autoLayout" : false,
+    "staleState" : "none",
+    "sourceSuggestions" : {
+      "sources" : [ ]
+    },
+    "version" : 3
+  },
+  "processes" : {
+    "null_model##qJ9D5tZG" : {
+      "id" : "null_model##qJ9D5tZG",
+      "component" : "TargetModel",
+      "metadata" : {
+        "label" : "null_model",
+        "x" : 20,
+        "y" : 20,
+        "phase" : 0,
+        "macroDependencies" : [ ]
+      },
+      "properties" : {
+        "customQueryDisabled" : true,
+        "customQuery" : false,
+        "incrementalEditorDisabled" : true,
+        "query" : "SELECT * \n\nFROM SQLStatement_1\n",
+        "incrementalKey" : false,
+        "incremental" : {
+          "expression" : "true"
+        }
+      },
+      "ports" : {
+        "inputs" : [ {
+          "id" : "S1ZD83yQ",
+          "slug" : "SQLStatement_1"
+        } ],
+        "outputs" : [ {
+          "id" : "s0K4G7xv",
+          "slug" : "out"
+        } ],
+        "isCustomOutputSchema" : false,
+        "autoUpdateOnRun" : false
+      }
+    },
+    "aoTaptCnSs2nNTHpgFeaT$$qxnfHsQ6ae6jssUntgdZU" : {
+      "id" : "aoTaptCnSs2nNTHpgFeaT$$qxnfHsQ6ae6jssUntgdZU",
+      "component" : "SQLStatement",
+      "metadata" : {
+        "label" : "SQLStatement_1",
+        "slug" : "SQLStatement_1",
+        "x" : -140,
+        "y" : 20,
+        "phase" : 0,
+        "macroDependencies" : [ ]
+      },
+      "properties" : {
+        "fileTabs" : [ {
+          "path" : "out",
+          "id" : "out",
+          "language" : "sql",
+          "content" : "SELECT null AS nothing"
+        } ]
+      },
+      "ports" : {
+        "inputs" : [ ],
+        "outputs" : [ {
+          "id" : "pRAvC6cwnUWsqTg60Ih5X$$XzucmozAT75EGymnrVyba",
+          "slug" : "out"
+        } ],
+        "isCustomOutputSchema" : false,
+        "autoUpdateOnRun" : false
+      }
+    }
+  },
+  "connections" : [ {
+    "id" : "5kSvF2WcWa2edplcVc0hw$$ujL0KcNSSf8pacLQ-xPlg",
+    "source" : "aoTaptCnSs2nNTHpgFeaT$$qxnfHsQ6ae6jssUntgdZU",
+    "sourcePort" : "pRAvC6cwnUWsqTg60Ih5X$$XzucmozAT75EGymnrVyba",
+    "target" : "null_model##qJ9D5tZG",
+    "targetPort" : "S1ZD83yQ"
+  } ],
+  "component" : "Model"
+}

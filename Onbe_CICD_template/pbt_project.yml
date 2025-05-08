@@ -1,0 +1,88 @@
+name: Onbe_CICD_template
+description: ''
+version: 0.0.1
+author: best.neil@prophecy.io
+language: sql
+buildSystem: ''
+buildSystemDetails: null
+pipelines: {}
+datasets: {}
+templates: {}
+jobs: {}
+gemContainer:
+  languageVersion: ''
+  gemLibsVersion: ''
+  gems: {}
+  dependencies: null
+functions:
+  author: null
+  createdAt: '2025-04-23 18:38:56'
+  udfs: {}
+  udafs: {}
+  expressions: {}
+  airflowFunctions: {}
+  businessRules: {}
+subgraphs: {}
+sqlModels:
+  .prophecy/metadata/sqlmodels/null_model:
+    name: null_model
+    schema:
+      entityType: ''
+      providerType: Snowflake
+      fields:
+      - name: NOTHING
+        dataType:
+          type: String
+    description: null
+    author: best.neil@prophecy.io
+    files:
+    - models/null_model.sql
+    - .prophecy/ide/models/null_model.json
+    sqlDependencies:
+      models: []
+      datasets: []
+      seeds: []
+      sources: []
+      snapshots: []
+    createdAt: '2025-04-23 18:42:14'
+sqlSnapshots: {}
+sqlTests:
+  .prophecy/metadata/sqltests/null_test:
+    name: null_test
+    description: null
+    author: best.neil@prophecy.io
+    files:
+    - tests/generic/null_test.sql
+    testType: GenericDataTest
+    createdAt: '2025-04-23 18:48:26'
+sqlMacros:
+  .prophecy/metadata/sqlmacros/generate_schema_name:
+    name: generate_schema_name
+    macroType: expression
+    description: null
+    author: best.neil@prophecy.io
+    files:
+    - macros/generate_schema_name.sql
+    - .prophecy/ide/macros/generate_schema_name.json
+    createdAt: '2025-04-23 18:39:10'
+sqlSeeds: {}
+sqlSources: {}
+sqlUnreferencedSources: {}
+sqlPipeline:
+  name: sqlPipeline
+  description: null
+  author: best.neil@prophecy.io
+  createdAt: '2025-04-23 18:38:56'
+dependencies: []
+projectDependencies:
+  '45118':
+    projectUID: 45118
+    projectName: ProphecySnowflakeSqlBasics
+    repositoryPath: gitUri=https://github.com/prophecy-io/snowflake-sql-basics&subPath=
+    version: 0.0.3
+    isDefault: true
+    author: null
+    createdAt: '2025-04-23 18:37:31'
+flags:
+  shouldAddDefaultDependenciesIfAbsent: false
+pipelineConfigurations: {}
